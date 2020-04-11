@@ -13,7 +13,6 @@
     "build:devops": "vue-cli-service build --mode devops",
     "build:supertagdev": "vue-cli-service build --mode supertagdev",
     "build:supertagbeta": "vue-cli-service build --mode supertagbeta",
-    "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit --require tests/setup.js tests/**/*.spec.js"
   },
   "dependencies": {
