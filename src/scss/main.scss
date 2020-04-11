@@ -1,0 +1,87 @@
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/grid/_all.sass";
+@import "bulma/sass/components/_all.sass";
+@import "bulma/sass/elements/_all.sass";
+@import "bulma-checkradio/src/sass/index.sass";
+
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+
+//app
+html {
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  padding: 10px;
+  margin: 0;
+}
+
+.searchbox {
+  @media screen and (min-width: $tablet) {
+    width: 40%;
+  }
+}
+
+i.fa-spinner {
+  color: #e3e3e3;
+}
+
+.is-checkradio[type="checkbox"] {
+  display: none; //chrome fix
+}
+
+.check-only[type="checkbox"] + label {
+  padding-left: 0;
+  margin: 0;
+}
+
+.tool-bar {
+  height: 1.5em;
+  button {
+    margin: 0 5px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.navbar ~ .breadcrumb {
+  margin: 10px 0 0 10px;
+}
+
+table {
+  margin: 0;
+}
+.scrollable {
+  margin-top: 5px;
+}
+
+
+.ag-grid-status{
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  margin-top:15px;
+  .ag-overlay {
+    .overlay-grid{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      background-color: #808080;
+      opacity: 0.4;
+      z-index: 100000;
+    }
+  }
+
+ .ag-theme-balham .ag-header {
+     background-color:  rgb(233, 237, 255) !important;
+  }
+}
+
+

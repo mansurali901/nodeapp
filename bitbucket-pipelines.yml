@@ -1,0 +1,186 @@
+image: node:10-jessie
+
+pipelines:
+  custom:
+    admin-prod:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:prod
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To Production
+           image: mesosphere/aws-cli:1.14.5
+           deployment: Production
+           script:
+            - aws s3 sync s3://$ADMIN_PROD_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/ 
+            - aws s3 sync dist s3://$ADMIN_PROD_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+        - step:
+           name: Rollback On Prod
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/production/ s3://$ADMIN_PROD_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-hotel:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:hotel
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To Hotel
+           image: mesosphere/aws-cli:1.14.5
+           deployment: Hotel
+           script:
+            - aws s3 sync s3://$ADMIN_HOTEL_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/ 
+            - aws s3 sync dist s3://$ADMIN_HOTEL_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+        - step:
+           name: Rollback On Hotel
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/hotel/ s3://$ADMIN_HOTEL_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-dev:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:dev
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To Dev
+           image: mesosphere/aws-cli:1.14.5           
+           deployment: Dev
+           script:
+            - aws s3 sync s3://$ADMIN_DEV_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/ 
+            - aws s3 sync dist s3://$ADMIN_DEV_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'          
+        - step:
+           name: Rollback On Dev
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/dev/ s3://$ADMIN_DEV_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-devops:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:devops
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To Devops
+           image: mesosphere/aws-cli:1.14.5
+           deployment: Devops
+           script:
+            - aws s3 sync s3://$ADMIN_DEVOPS_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/
+            - aws s3 sync dist s3://$ADMIN_DEVOPS_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+        - step:
+           name: Rollback On Devops
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/devops/ s3://$ADMIN_DEVOPS_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-testharness:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:testharness
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To TestHarness
+           image: mesosphere/aws-cli:1.14.5
+           deployment: TestHarness
+           script:
+            - aws s3 sync s3://$ADMIN_TESTHARNESS_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/            
+            - aws s3 sync dist s3://$ADMIN_TESTHARNESS_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+        - step:
+           name: Rollback On Testharness
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/testharness/ s3://$ADMIN_TESTHARNESS_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+ 
+    admin-supertag-dev:
+        - step:
+            name: Build
+            script:
+            - npm install
+            - npm run build:supertagdev
+            artifacts:
+            - dist/**
+        - step:
+            name: Deploy To Supertag Dev
+            image: mesosphere/aws-cli:1.14.5           
+            deployment: SupertagDev
+            script:
+            - aws s3 sync s3://$ADMIN_SUPER_TAG_DEV_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/ 
+            - aws s3 sync dist s3://$ADMIN_SUPER_TAG_DEV_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'          
+        - step:
+            name: Rollback On Supertag Dev
+            image: mesosphere/aws-cli:1.14.5
+            trigger: manual
+            script:
+                - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/supertagdev/ s3://$ADMIN_SUPER_TAG_DEV_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-supertag-beta:
+        - step:
+            name: Build
+            script:
+            - npm install
+            - npm run build:supertagbeta
+            artifacts:
+            - dist/**
+        - step:
+            name: Deploy To Supertag Beta
+            image: mesosphere/aws-cli:1.14.5           
+            deployment: SupertagBeta
+            script:
+            - aws s3 sync s3://$ADMIN_SUPER_TAG_BETA_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/ 
+            - aws s3 sync dist s3://$ADMIN_SUPER_TAG_BETA_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'          
+        - step:
+            name: Rollback On Supertaf Beta
+            image: mesosphere/aws-cli:1.14.5
+            trigger: manual
+            script:
+                - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/supertagbeta/ s3://$ADMIN_SUPER_TAG_BETA_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+
+
+    admin-testing:
+        - step:
+           name: Build
+           script:
+            - npm install
+            - npm run build:dev
+           artifacts:
+            - dist/**
+        - step:
+           name: Deploy To Testing
+           image: mesosphere/aws-cli:1.14.5
+           deployment: Testing
+           script:
+            - aws s3 sync s3://$ADMIN_TESTING_BUCKET/ s3://$ADMIN_BUCKET_BACKUP/$ENV/       
+            - aws s3 sync dist s3://$ADMIN_TESTING_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
+        - step:
+           name: Rollback On Testing
+           image: mesosphere/aws-cli:1.14.5
+           trigger: manual
+           script:
+             - aws s3 sync s3://$ADMIN_BUCKET_BACKUP/testing/ s3://$ADMIN_TESTING_BUCKET/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --cache-control 'no-cache, no-store'
